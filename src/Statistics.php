@@ -51,6 +51,9 @@ class Statistics extends QuestAbstract
         $query = $this->getDb()->prepare($sql);
         $query->execute([$this->start_date, $this->end_date]);
 
+//        $result = $query->fetchColumn();
+
+
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
 

@@ -16,7 +16,8 @@ use Symfony\Component\Console\Application;
 $console = new Application('Sweb Task', '1.0.1');
 
 $console->addCommands(array(
-  new Task\Console\Command\SwebCommand(),
+  new \Task\Console\Command\SwebCommand(),
+  new \Task\Console\Command\GenerateCommand()
 ));
 
 $console->run();

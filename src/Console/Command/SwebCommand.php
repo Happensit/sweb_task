@@ -79,6 +79,7 @@ class SwebCommand extends Command
         $end_date = $helper->ask($input, $output, $question);
 
         if ($end_date > $start_date) {
+
             $data = new Statistics();
             $data->init($start_date, $end_date);
 
