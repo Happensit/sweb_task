@@ -15,11 +15,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Helper\Table;
-use Task\Statistics;
-use Task\Console\Helper\DateTime;
 use Symfony\Component\Console\Exception\RuntimeException;
 
-class SwebCommand extends Command
+class StatisticsCommand extends Command
 {
 
     protected function configure()
@@ -40,11 +38,11 @@ class SwebCommand extends Command
     {
 
         $helper = $this->getHelper('question');
-        $question = new Question('Please enter start date: ', new DateTime('-6 month'));
+        $question = new Question('Please enter start date: ', new \DateTime('-6 month'));
         $question->setValidator(
           function ($answer) {
               try {
-                  $answer = new DateTime($answer);
+                  $answer = new \DateTime($answer);
               } catch (\Exception $e) {
                   throw new RuntimeException(
                     "Please, input valid format date " . date('Y-m-d')
@@ -59,12 +57,12 @@ class SwebCommand extends Command
 
 
         $question = new Question(
-          'Please enter end date: ', new DateTime('now')
+          'Please enter end date: ', new \DateTime('now')
         );
         $question->setValidator(
           function ($answer) {
               try {
-                  $answer = new DateTime($answer);
+                  $answer = new \DateTime($answer);
                   $answer->setTime(23, 59, 59);
               } catch (\Exception $e) {
                   throw new RuntimeException(
@@ -80,17 +78,17 @@ class SwebCommand extends Command
 
         if ($end_date > $start_date) {
 
-            $data = new Statistics();
-            $data->init($start_date, $end_date);
+            $statistics = $this->getHelper('statistics');
+            $statistics->init($start_date, $end_date);
 
-            $result[] = $data->getAll();
+            $result[] = $statistics->getAll();
 
             if ($input->getOption('with-documents')) {
-                $result[] = $data->getWithDocs();
+                $result[] = $statistics->getWithDocs();
             }
 
             if ($input->getOption('without-documents')) {
-                $result[] = $data->getWithoutDocs();
+                $result[] = $statistics->getWithoutDocs();
             }
 
             $table = new Table($output);

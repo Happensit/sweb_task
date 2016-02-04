@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class GenerateCommand extends Command
 {
@@ -67,6 +68,7 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
         $output->writeln(array(
           '',
           '<comment>Welcome to the command generator</comment>',
@@ -91,9 +93,12 @@ EOF
 
         $commandClass = $helper->ask($input, $output, $question);
 
+        $rows = 100;
+        $progressBar = new ProgressBar($output, $rows);
         $commandName = $this->colonize($commandClass);
         $path = $this->generateCommand($commandClass, $commandName);
-        $output->writeln(sprintf('Generated new command class to "<info>%s</info>"', realpath($path)));
+        $progressBar->finish();
+        $output->writeln(sprintf(' Generated new command class to "<info>%s</info>"', realpath($path)));
     }
 
     protected function colonize($word)

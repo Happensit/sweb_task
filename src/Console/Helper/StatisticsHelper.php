@@ -1,18 +1,19 @@
 <?php
-
-namespace Task;
 /**
- * @Data.php
+ * @StatisticsHelper.php
  * Created by happensit for sweb.
- * Date: 01.02.16
- * Time: 22:34
+ * Date: 05.02.16
+ * Time: 1:38
  */
 
-use SpaceWeb\Quest\QuestAbstract;
+namespace Task\Console\Helper;
 
+use Symfony\Component\Console\Helper\Helper;
+use Doctrine\DBAL\Connection;
 
-class Statistics extends QuestAbstract
+class StatisticsHelper extends Helper
 {
+
     private $start_date, $end_date;
 
     /**
@@ -26,19 +27,14 @@ class Statistics extends QuestAbstract
     }
 
     /**
-     * @return mixed
+     * @return \Doctrine\DBAL\Connection
      */
-    public function getStartDate()
-    {
-        return $this->start_date;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEndDate()
-    {
-        return $this->end_date;
+    public function getDb(){
+        $connection = $this->getHelperSet()->get('database')->getConnection();
+        if (!$connection instanceof Connection) {
+            throw new \InvalidArgumentException('The provided connection is not an instance of the Doctrine DBAL connection.');
+        }
+        return $connection;
     }
 
     /**
@@ -48,13 +44,8 @@ class Statistics extends QuestAbstract
     {
         $sql = "SELECT COUNT(p.id) as count, SUM(p.amount) as sum FROM payments as p
                 WHERE p.create_ts BETWEEN ? AND ?";
-        $query = $this->getDb()->prepare($sql);
-        $query->execute([$this->start_date, $this->end_date]);
+        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
-//        $result = $query->fetchColumn();
-
-
-        return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -66,10 +57,7 @@ class Statistics extends QuestAbstract
                 JOIN documents as d ON d.entity_id = p.id
                 WHERE p.create_ts BETWEEN ? AND ?";
 
-        $query = $this->getDb()->prepare($sql);
-        $query->execute([$this->start_date, $this->end_date]);
-
-        return $query->fetch(\PDO::FETCH_ASSOC);
+        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -83,11 +71,17 @@ class Statistics extends QuestAbstract
                 LEFT JOIN documents as d ON d.entity_id = p.id WHERE d.entity_id IS NULL AND
                 p.create_ts BETWEEN ? AND ?";
 
-        $query = $this->getDb()->prepare($sql);
-        $query->execute([$this->start_date, $this->end_date]);
-
-        return $query->fetch(\PDO::FETCH_ASSOC);
+        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
+    /**
+     * Returns the canonical name of this helper.
+     *
+     * @return string The canonical name
+     */
+    public function getName()
+    {
+       return 'statistics';
+    }
 }
