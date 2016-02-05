@@ -1,2 +1,4 @@
 .idea
 vendor
+convert-sqlite-to-mysql.py
+mysqldump.sql

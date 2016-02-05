@@ -17,7 +17,7 @@ $console = new Application('Sweb Task', '1.0.1');
 
 $console->addCommands([
     new \Task\Console\Command\StatisticsCommand(),
-    new \Task\Console\Command\GenerateCommand()
+    new \Task\Console\Command\GenerateCommand(),
 ]);
 
 $dbConn = \Doctrine\DBAL\DriverManager::getConnection([

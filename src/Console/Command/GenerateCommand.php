@@ -49,7 +49,7 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(array("","<info>Execute</info>",""));
+        $output->writeln(["","<info>Execute</info>",""]);
     }
 }';
 
@@ -69,11 +69,11 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $output->writeln(array(
+        $output->writeln([
           '',
           '<comment>Welcome to the command generator</comment>',
           ''
-        ));
+        ]);
 
         $helper = $this->getHelper('question');
 
@@ -111,14 +111,14 @@ EOF
 
     protected function generateCommand($commandClass, $commandName)
     {
-        $placeHolders = array(
+        $placeHolders =[
           '<class>',
           '<name>'
-        );
-        $replacements = array(
+        ];
+        $replacements = [
           $commandClass,
           $commandName
-        );
+        ];
         $code = str_replace($placeHolders, $replacements, $this->template);
         $path = __DIR__ . '/'.$commandClass.'.php';
         if (!file_exists(__DIR__)) {

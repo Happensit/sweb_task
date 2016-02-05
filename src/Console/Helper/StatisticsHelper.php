@@ -14,7 +14,7 @@ use Doctrine\DBAL\Connection;
 class StatisticsHelper extends Helper
 {
 
-    private $start_date, $end_date;
+    private $start_date, $end_date, $connection;
 
     /**
      * @param $start_date
@@ -27,14 +27,23 @@ class StatisticsHelper extends Helper
     }
 
     /**
-     * @return \Doctrine\DBAL\Connection
+     * @param mixed $connection
      */
-    public function getDb(){
-        $connection = $this->getHelperSet()->get('database')->getConnection();
+    public function setConnection($connection)
+    {
         if (!$connection instanceof Connection) {
             throw new \InvalidArgumentException('The provided connection is not an instance of the Doctrine DBAL connection.');
         }
-        return $connection;
+
+        $this->connection = $connection;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConnection()
+    {
+        return $this->connection;
     }
 
     /**
@@ -44,7 +53,7 @@ class StatisticsHelper extends Helper
     {
         $sql = "SELECT COUNT(p.id) as count, SUM(p.amount) as sum FROM payments as p
                 WHERE p.create_ts BETWEEN ? AND ?";
-        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -57,7 +66,7 @@ class StatisticsHelper extends Helper
                 JOIN documents as d ON d.entity_id = p.id
                 WHERE p.create_ts BETWEEN ? AND ?";
 
-        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -71,7 +80,7 @@ class StatisticsHelper extends Helper
                 LEFT JOIN documents as d ON d.entity_id = p.id WHERE d.entity_id IS NULL AND
                 p.create_ts BETWEEN ? AND ?";
 
-        return $this->getDb()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -84,4 +93,5 @@ class StatisticsHelper extends Helper
     {
        return 'statistics';
     }
+
 }
