@@ -78,11 +78,11 @@ class StatisticsCommand extends Command
 
         if ($end_date > $start_date) {
 
-            $connection = $this->getHelper('database');
+            $database = $this->getHelper('database');
             $statistics = $this->getHelper('statistics');
 
             $statistics->init($start_date, $end_date);
-            $statistics->setConnection($connection->getConnection());
+            $statistics->setConnection($database->getConnection());
 
             $result[] = $statistics->getAll();
 
