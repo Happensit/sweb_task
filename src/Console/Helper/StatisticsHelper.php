@@ -41,19 +41,11 @@ class StatisticsHelper extends Helper
     /**
      * @return mixed
      */
-    public function getConnection()
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getAll()
     {
         $sql = "SELECT COUNT(p.id) as count, SUM(p.amount) as sum FROM payments as p
                 WHERE p.create_ts BETWEEN ? AND ?";
-        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->connection->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -66,7 +58,7 @@ class StatisticsHelper extends Helper
                 JOIN documents as d ON d.entity_id = p.id
                 WHERE p.create_ts BETWEEN ? AND ?";
 
-        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->connection->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
@@ -80,7 +72,7 @@ class StatisticsHelper extends Helper
                 LEFT JOIN documents as d ON d.entity_id = p.id WHERE d.entity_id IS NULL AND
                 p.create_ts BETWEEN ? AND ?";
 
-        return $this->getConnection()->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
+        return $this->connection->fetchAssoc($sql, [$this->start_date, $this->end_date], ['datetime','datetime']);
 
     }
 
